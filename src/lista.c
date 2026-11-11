@@ -1,12 +1,15 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "lista.h"
 
+// Inicializa a lista vazia
 void inicializarLista(Lista *lista) {
     lista->inicio = NULL;
     lista->fim = NULL;
 }
 
+// Insere um novo ID no final da lista
 void inserirFinal(Lista *lista, int id) {
     NoLista *novo = malloc(sizeof(NoLista));
 
@@ -18,6 +21,7 @@ void inserirFinal(Lista *lista, int id) {
     novo->id = id;
     novo->proximo = NULL;
 
+    // Verifica se a lista está vazia
     if (lista->inicio == NULL) {
         lista->inicio = novo;
     } else {
@@ -27,8 +31,36 @@ void inserirFinal(Lista *lista, int id) {
     lista->fim = novo;
 }
 
+// Remove o primeiro elemento da lista
+int removerInicio(Lista *lista) {
+
+    // Verifica se a lista está vazia
+    if (lista->inicio == NULL) {
+        return 0;
+    }
+
+    NoLista *temporario = lista->inicio;
+
+    lista->inicio = lista->inicio->proximo;
+
+    // Se não restar nenhum elemento, atualiza o fim
+    if (lista->inicio == NULL) {
+        lista->fim = NULL;
+    }
+
+    free(temporario);
+
+    return 1;
+}
+
+// Exibe todos os IDs da lista
 void exibirLista(const Lista *lista) {
     NoLista *atual = lista->inicio;
+
+    if (atual == NULL) {
+        printf("A lista esta vazia.\n");
+        return;
+    }
 
     while (atual != NULL) {
         printf("%d ", atual->id);
@@ -38,6 +70,7 @@ void exibirLista(const Lista *lista) {
     printf("\n");
 }
 
+// Libera a memória utilizada pela lista
 void liberarLista(Lista *lista) {
     NoLista *atual = lista->inicio;
 
