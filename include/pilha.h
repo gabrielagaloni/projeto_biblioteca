@@ -1,22 +1,23 @@
+
 #ifndef PILHA_H
 #define PILHA_H
 
+// Estrutura de cada elemento da pilha
 typedef struct NoPilha {
-    int tipoAcao;
-    int id1;
-    int id2;
+    int id;
     struct NoPilha *proximo;
 } NoPilha;
 
+// Estrutura principal da pilha
 typedef struct {
     NoPilha *topo;
 } Pilha;
 
+// Funções da pilha
 void inicializarPilha(Pilha *pilha);
-int empilhar(Pilha *pilha, int tipoAcao, int id1, int id2);
+int empilhar(Pilha *pilha, int id);
 int desempilhar(Pilha *pilha);
-int consultarTopo(const Pilha *pilha);
-void exibirHistorico(const Pilha *pilha);
+void exibirPilha(const Pilha *pilha);
 void liberarPilha(Pilha *pilha);
 
 #endif

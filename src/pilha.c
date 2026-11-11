@@ -1,21 +1,23 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "pilha.h"
 
+// Inicializa a pilha vazia
 void inicializarPilha(Pilha *pilha) {
     pilha->topo = NULL;
 }
 
-int empilhar(Pilha *pilha, int tipoAcao, int id1, int id2) {
+// Insere um novo ID no topo da pilha
+int empilhar(Pilha *pilha, int id) {
     NoPilha *novo = malloc(sizeof(NoPilha));
 
     if (novo == NULL) {
+        printf("Erro: memoria insuficiente.\n");
         return 0;
     }
 
-    novo->tipoAcao = tipoAcao;
-    novo->id1 = id1;
-    novo->id2 = id2;
+    novo->id = id;
     novo->proximo = pilha->topo;
 
     pilha->topo = novo;
@@ -23,12 +25,14 @@ int empilhar(Pilha *pilha, int tipoAcao, int id1, int id2) {
     return 1;
 }
 
+// Remove o elemento do topo da pilha
 int desempilhar(Pilha *pilha) {
     if (pilha->topo == NULL) {
         return 0;
     }
 
     NoPilha *temporario = pilha->topo;
+
     pilha->topo = temporario->proximo;
 
     free(temporario);
@@ -36,31 +40,28 @@ int desempilhar(Pilha *pilha) {
     return 1;
 }
 
-int consultarTopo(const Pilha *pilha) {
-    if (pilha->topo == NULL) {
-        return -1;
-    }
-
-    return pilha->topo->tipoAcao;
-}
-
-void exibirHistorico(const Pilha *pilha) {
+// Exibe os IDs do topo para a base
+void exibirPilha(const Pilha *pilha) {
     NoPilha *atual = pilha->topo;
-    int quantidade = 0;
 
-    while (atual != NULL && quantidade < 5) {
-        printf("Acao: %d | ID 1: %d | ID 2: %d\n",
-               atual->tipoAcao, atual->id1, atual->id2);
+    if (atual == NULL) {
+        printf("A pilha esta vazia.\n");
+        return;
+    }
 
+    while (atual != NULL) {
+        printf("%d\n", atual->id);
         atual = atual->proximo;
-        quantidade++;
     }
 }
 
+// Libera toda a memoria utilizada pela pilha
 void liberarPilha(Pilha *pilha) {
     while (pilha->topo != NULL) {
         NoPilha *temporario = pilha->topo;
+
         pilha->topo = temporario->proximo;
+
         free(temporario);
     }
 }
