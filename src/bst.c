@@ -1,11 +1,14 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "bst.h"
 
+// Inicializa a arvore vazia
 void inicializarArvore(Arvore *arvore) {
     arvore->raiz = NULL;
 }
 
+// Insere um livro na arvore, sem permitir IDs duplicados
 int inserirLivro(Arvore *arvore, Livro livro) {
     NoArvore **atual = &arvore->raiz;
 
@@ -36,6 +39,7 @@ int inserirLivro(Arvore *arvore, Livro livro) {
     return 1;
 }
 
+// Busca um livro pelo ID
 NoArvore *buscarLivro(const Arvore *arvore, int id) {
     NoArvore *atual = arvore->raiz;
 
@@ -54,6 +58,7 @@ NoArvore *buscarLivro(const Arvore *arvore, int id) {
     return NULL;
 }
 
+// Encontra o menor no de uma subarvore
 static NoArvore *menorNo(NoArvore *no) {
     while (no->esquerda != NULL) {
         no = no->esquerda;
@@ -62,6 +67,7 @@ static NoArvore *menorNo(NoArvore *no) {
     return no;
 }
 
+// Remove um no da arvore
 static NoArvore *removerNo(NoArvore *raiz, int id, int *removido) {
     if (raiz == NULL) {
         return NULL;
@@ -74,23 +80,27 @@ static NoArvore *removerNo(NoArvore *raiz, int id, int *removido) {
     } else {
         *removido = 1;
 
+        // Caso 1: no sem filho esquerdo
         if (raiz->esquerda == NULL) {
             NoArvore *temporario = raiz->direita;
             free(raiz);
             return temporario;
         }
 
+        // Caso 2: no sem filho direito
         if (raiz->direita == NULL) {
             NoArvore *temporario = raiz->esquerda;
             free(raiz);
             return temporario;
         }
 
+        // Caso 3: no com dois filhos
         NoArvore *sucessor = menorNo(raiz->direita);
 
         raiz->livro = sucessor->livro;
 
         int ignorado = 0;
+
         raiz->direita = removerNo(
             raiz->direita,
             sucessor->livro.id,
@@ -101,6 +111,7 @@ static NoArvore *removerNo(NoArvore *raiz, int id, int *removido) {
     return raiz;
 }
 
+// Funcao principal de remocao
 int removerLivro(Arvore *arvore, int id) {
     int removido = 0;
 
@@ -109,12 +120,13 @@ int removerLivro(Arvore *arvore, int id) {
     return removido;
 }
 
-void listarEmOrdem(const NoArvore *raiz) {
+// Percorre a arvore em ordem
+static void percorrerEmOrdem(const NoArvore *raiz) {
     if (raiz == NULL) {
         return;
     }
 
-    listarEmOrdem(raiz->esquerda);
+    percorrerEmOrdem(raiz->esquerda);
 
     printf("ID: %d | Titulo: %s | Autor: %s | Ano: %d\n",
            raiz->livro.id,
@@ -122,9 +134,20 @@ void listarEmOrdem(const NoArvore *raiz) {
            raiz->livro.autor,
            raiz->livro.ano_publicacao);
 
-    listarEmOrdem(raiz->direita);
+    percorrerEmOrdem(raiz->direita);
 }
 
+// Exibe os livros em ordem crescente de ID
+void listarEmOrdem(const NoArvore *raiz) {
+    if (raiz == NULL) {
+        printf("Nenhum livro cadastrado na BST.\n");
+        return;
+    }
+
+    percorrerEmOrdem(raiz);
+}
+
+// Libera a memoria da arvore
 void liberarArvore(NoArvore *raiz) {
     if (raiz == NULL) {
         return;
